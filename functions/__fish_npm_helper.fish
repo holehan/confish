@@ -1,4 +1,4 @@
-# This file is explicitly sourced by the npm and fish completions
+# This file is explicitly sourced by the npm and yarn completions
 # It is used to enumerate entries from the npm registry, interact with a locally installed
 # package.json file, and more.
 # Other completions that would depend on this include jspm, pnpm, etc.
@@ -38,7 +38,7 @@ function __yarn_filtered_list_packages
 end
 
 function __yarn_find_package_json
-    set parents (__fish_parent_directories (pwd -P))
+    set -l parents (__fish_parent_directories (pwd -P))
 
     for p in $parents
         if test -f "$p/package.json"
@@ -58,7 +58,7 @@ function __yarn_installed_packages
     end
 
     if set -l python (__fish_anypython)
-        $python -c 'import json, sys; data = json.load(sys.stdin);
+        $python -S -c 'import json, sys; data = json.load(sys.stdin);
 print("\n".join(data["dependencies"])); print("\n".join(data["devDependencies"]))' <$package_json 2>/dev/null
     else if type -q jq
         jq -r '.dependencies as $a1 | .devDependencies as $a2 | ($a1 + $a2) | to_entries[] | .key' $package_json
